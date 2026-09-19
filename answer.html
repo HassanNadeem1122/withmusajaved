@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>Answer a question · Ask Musa Javed</title>
+  <meta name="theme-color" content="#1d3f9e">
+  <link rel="icon" href="logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@500;700;800&family=Playfair+Display:ital,wght@1,700&display=swap" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="style.css">
+  <script>window.API = location.hostname.endsWith("github.io") ? "https://ask-musa-javed.pages.dev" : "";</script>
+  <style>
+    .answer-wrap { max-width: 640px; margin: 0 auto 48px; }
+    .the-q { font-size: 1.15rem; font-weight: 700; margin: 6px 0 4px; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .actions .btn { flex: 1; }
+    .btn.ghost { background: transparent; color: var(--danger); border: 1px solid var(--line); }
+    .btn.ghost:hover { background: #fdecec; }
+    .done { background: var(--gold-soft); border-left: 4px solid var(--gold); padding: 12px 14px; font-weight: 600; margin: 0; }
+    .done a { color: var(--blue); }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <a class="logo" href="index.html"><img src="logo.png" alt=""><span>The City School</span></a>
+      <nav aria-label="Pages">
+        <a href="index.html">Home</a>
+        <a href="qna.html">Q&amp;A</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="title">
+      <h1>Answer it</h1>
+      <p>Only you can see this page, Musa.</p>
+    </section>
+
+    <section class="card answer-wrap" id="box">
+      <p class="hint" id="status">Loading the question…</p>
+
+      <div id="editor" hidden>
+        <p class="hint" id="asker"></p>
+        <p class="the-q" id="question"></p>
+        <form id="answerForm" autocomplete="off">
+          <div class="field">
+            <label for="answer">Your answer</label>
+            <textarea id="answer" maxlength="3000" placeholder="Type your answer…"></textarea>
+          </div>
+          <p class="hint" id="notifyNote"></p>
+          <p class="err" id="err" role="status"></p>
+          <div class="actions">
+            <button class="btn" type="submit" id="publish">Publish answer</button>
+            <button class="btn ghost" type="button" id="hide">Hide this question</button>
+          </div>
+        </form>
+      </div>
+      <p class="done" id="done" hidden></p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap"><b>Vote wisely. Vote Musa Javed.</b><span>withmusajaved@gmail.com</span></div>
+  </footer>
+
+  <script>
+    (function () {
+      const $ = (id) => document.getElementById(id);
+      const params = new URLSearchParams(location.search);
+      const id = params.get("id"), t = params.get("t");
+      let current = null;
+
+      function showDone(html) { $("editor").hidden = true; const d = $("done"); d.innerHTML = html; d.hidden = false; }
+
+      if (!id || !t) { $("status").textContent = "This link is missing something. Open it straight from the email."; return; }
+
+      fetch(window.API + `/api/answer?id=${encodeURIComponent(id)}&t=${encodeURIComponent(t)}`, { cache: "no-store" })
+        .then((r) => { if (r.status === 404) throw new Error("nf"); if (!r.ok) throw new Error("x"); return r.json(); })
+        .then((q) => {
+          current = q;
+          $("status").hidden = true;
+          $("editor").hidden = false;
+          $("asker").textContent = `${q.name || "Someone"}${q.class ? " from " + q.class : ""} asked:`;
+          $("question").textContent = q.question;
+          $("answer").value = q.answer || "";
+          if (q.answer) $("publish").textContent = "Update answer";
+          if (q.hidden) $("hide").textContent = "Hidden (publish to show it)";
+          $("notifyNote").textContent = q.answer
+            ? "This is already answered. Updating it changes what's on the Q&A page."
+            : q.hasEmail ? "They left their email, so they'll get your answer by email too." : "They didn't leave an email, so it'll only show on the Q&A page.";
+        })
+        .catch((e) => { $("status").textContent = e.message === "nf" ? "Couldn't find this question. The link may be wrong." : "Couldn't load the question. Check your internet and refresh."; });
+
+      async function save(hidden) {
+        const answer = $("answer").value.trim();
+        if (!hidden && answer.length < 2) { $("err").textContent = "Write your answer first."; return; }
+        $("err").textContent = "";
+        const btns = [$("publish"), $("hide")]; btns.forEach((b) => (b.disabled = true));
+        try {
+          const r = await fetch(window.API + "/api/answer", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, t, answer, hidden }) });
+          const data = await r.json().catch(() => ({}));
+          if (!r.ok || !data.ok) throw new Error();
+          if (hidden) showDone("Hidden. It won't show on the Q&amp;A page.");
+          else showDone(`Posted! It's live on the <a href="qna.html">Q&amp;A page</a>.${data.notified ? " They've been emailed your answer too." : ""}`);
+        } catch {
+          $("err").textContent = "That didn't save. Check your internet and try again.";
+        }
+        btns.forEach((b) => (b.disabled = false));
+      }
+      $("answerForm").addEventListener("submit", (e) => { e.preventDefault(); save(false); });
+      $("hide").addEventListener("click", () => { if (confirm("Hide this question from the Q&A page?")) save(true); });
+    })();
+  </script>
+</body>
+</html>

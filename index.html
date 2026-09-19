@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Ask Musa Javed</title>
+  <meta name="description" content="Musa Javed for Head Boy, The City School. Drop a suggestion, ask a question and read the answers.">
+  <meta property="og:title" content="Ask Musa Javed">
+  <meta property="og:description" content="Got an idea or a question for your Head Boy candidate? Tell Musa.">
+  <meta property="og:image" content="https://hassannadeem1122.github.io/ask-musa-javed/musa.jpg">
+  <meta property="og:url" content="https://hassannadeem1122.github.io/ask-musa-javed/">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#1d3f9e">
+  <link rel="icon" href="logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@500;700;800&family=Playfair+Display:ital,wght@1,700&display=swap" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="style.css">
+  <script>window.API = location.hostname.endsWith("github.io") ? "https://ask-musa-javed.pages.dev" : "";</script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <a class="logo" href="index.html"><img src="logo.png" alt=""><span>The City School</span></a>
+      <nav aria-label="Pages">
+        <a href="index.html">Home</a>
+        <a href="qna.html">Q&amp;A</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="title">
+      <h1>Ask Musa Javed</h1>
+      <p>Got something on your mind? Tell me.</p>
+      <span class="band">Vote Musa Javed for Head Boy</span>
+    </section>
+
+    <section class="home-grid">
+      <figure class="photo">
+        <img src="musa.jpg" alt="Musa Javed">
+        <figcaption>Musa Javed</figcaption>
+      </figure>
+
+      <div class="card">
+        <h2>Got an idea?</h2>
+        <p class="hint">Anything you want changed or done at school, big or small. I&#39;m listening.</p>
+        <form data-kind="Suggestion" autocomplete="off">
+          <div class="two">
+            <div class="field">
+              <label for="sName">Name</label>
+              <input id="sName" data-field="Name" maxlength="50" placeholder="Your name">
+            </div>
+            <div class="field">
+              <label for="sClass">Class</label>
+              <input id="sClass" data-field="Class" maxlength="20" placeholder="Your class">
+            </div>
+          </div>
+          <div class="field">
+            <label for="sText">Your idea</label>
+            <textarea id="sText" data-field="Suggestion" maxlength="1500" placeholder="What&#39;s on your mind?"></textarea>
+          </div>
+          <p class="reply-to" data-reply-to></p>
+          <p class="err" role="status"></p>
+          <button class="btn" type="submit">Send it</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="card about">
+      <h2>Hey, it&#39;s Musa</h2>
+      <p>I&#39;m running for Head Boy because I want school to actually feel better for all of us. So I made this page, basically my inbox for you. Tell me what&#39;s bugging you, what you&#39;d love to see, or just ask me something. I read every single message, promise.</p>
+      <ul>
+        <li><strong>Got an idea?</strong> Drop it in the box above.</li>
+        <li><strong>Got a question?</strong> Ask me on the <a href="qna.html">Q&amp;A page</a>.</li>
+      </ul>
+      <p>Leave your email and I&#39;ll get back to you myself. Or just email me at <a href="mailto:withmusajaved@gmail.com">withmusajaved@gmail.com</a>.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap"><b>Vote wisely. Vote Musa Javed.</b><span>withmusajaved@gmail.com</span></div>
+  </footer>
+
+  <script src="site.js"></script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Q&amp;A · Ask Musa Javed</title>
+  <meta property="og:title" content="Ask Musa Javed">
+  <meta property="og:description" content="Got an idea or a question for your Head Boy candidate? Tell Musa.">
+  <meta property="og:image" content="https://hassannadeem1122.github.io/ask-musa-javed/musa.jpg">
+  <meta property="og:url" content="https://hassannadeem1122.github.io/ask-musa-javed/">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#1d3f9e">
+  <link rel="icon" href="logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@500;700;800&family=Playfair+Display:ital,wght@1,700&display=swap" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="style.css">
+  <script>window.API = location.hostname.endsWith("github.io") ? "https://ask-musa-javed.pages.dev" : "";</script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <a class="logo" href="index.html"><img src="logo.png" alt=""><span>The City School</span></a>
+      <nav aria-label="Pages">
+        <a href="index.html">Home</a>
+        <a href="qna.html">Q&amp;A</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="title">
+      <h1>Ask Me Anything</h1>
+      <p>Seriously, anything. I&#39;ll answer right here.</p>
+    </section>
+
+    <section class="qna-grid">
+      <div class="card">
+        <h2>Ask me</h2>
+        <p class="hint">It comes straight to my inbox.</p>
+        <form data-kind="Question" autocomplete="off">
+          <div class="two">
+            <div class="field">
+              <label for="qName">Name</label>
+              <input id="qName" data-field="Name" maxlength="50" placeholder="Your name">
+            </div>
+            <div class="field">
+              <label for="qClass">Class</label>
+              <input id="qClass" data-field="Class" maxlength="20" placeholder="Your class">
+            </div>
+          </div>
+          <div class="field">
+            <label for="qText">Your question</label>
+            <textarea id="qText" data-field="Question" maxlength="1000" placeholder="What do you want to know?"></textarea>
+          </div>
+          <p class="reply-to" data-reply-to></p>
+          <p class="err" role="status"></p>
+          <button class="btn" type="submit">Send question</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>My answers</h2>
+        <p class="hint" id="qaCount"></p>
+        <ul class="qa-list" id="qaList"></ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap"><b>Vote wisely. Vote Musa Javed.</b><span>withmusajaved@gmail.com</span></div>
+  </footer>
+
+  <script>
+    (function () {
+      const list = document.getElementById("qaList"), count = document.getElementById("qaCount");
+      const note = (msg) => { const li = document.createElement("li"); li.className = "empty"; li.textContent = msg; list.replaceChildren(li); };
+      note("Loading answers…");
+      fetch(window.API + "/api/questions", { cache: "no-store" })
+        .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(({ questions }) => {
+          count.textContent = questions.length ? `${questions.length} answered so far` : "";
+          if (!questions.length) return note("Nothing here yet. Go on, ask the first question!");
+          list.replaceChildren();
+          for (const item of questions) {
+            const li = document.createElement("li"); li.className = "qa";
+            const q = document.createElement("p"); q.className = "q"; q.textContent = item.question;
+            const by = document.createElement("span"); by.className = "by";
+            by.textContent = "asked by " + (item.name || "someone") + (item.class ? ", " + item.class : "");
+            const a = document.createElement("div"); a.className = "a";
+            const who = document.createElement("b"); who.textContent = "MUSA:";
+            a.append(who, item.answer);
+            li.append(q, by, a); list.append(li);
+          }
+        })
+        .catch(() => note("Couldn't load answers right now. Refresh to try again."));
+    })();
+  </script>
+  <script src="site.js"></script>
+</body>
+</html>
